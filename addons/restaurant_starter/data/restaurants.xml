@@ -1,0 +1,10 @@
+<odoo>
+    <record id="restaurant_main" model="resto.restaurant">
+        <field name="name">Restaurant Principal</field>
+        <field name="external_key">main-restaurant</field>
+        <field name="legal_name">Restaurant Principal SARL</field>
+        <field name="city">Dakar</field>
+        <field name="manager">Super admin</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

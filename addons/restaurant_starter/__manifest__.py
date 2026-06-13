@@ -1,0 +1,28 @@
+{
+    "name": "Restaurant Starter",
+    "version": "17.0.1.0.0",
+    "category": "Point of Sale",
+    "summary": "Base modules and sample configuration for a restaurant on Odoo.",
+    "author": "Local",
+    "license": "LGPL-3",
+    "depends": [
+        "account",
+        "barcodes",
+        "mrp",
+        "point_of_sale",
+        "pos_hr",
+        "pos_restaurant",
+        "purchase",
+        "sale_management",
+        "stock",
+    ],
+    "data": [
+        "security/ir.model.access.csv",
+        "data/restaurants.xml",
+        "data/product_categories.xml",
+        "data/payment_methods.xml",
+        "data/products.xml",
+    ],
+    "installable": True,
+    "application": True,
+}

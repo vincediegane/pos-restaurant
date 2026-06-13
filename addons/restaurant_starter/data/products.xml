@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="product_menu_du_jour" model="product.template">
+        <field name="name">Menu du jour</field>
+        <field name="type">consu</field>
+        <field name="available_in_pos">True</field>
+        <field name="list_price">4500</field>
+        <field name="categ_id" ref="product_category_food"/>
+        <field name="pos_categ_ids" eval="[(6, 0, [ref('pos_category_kitchen')])]"/>
+    </record>
+
+    <record id="product_eau" model="product.template">
+        <field name="name">Eau minerale</field>
+        <field name="type">consu</field>
+        <field name="available_in_pos">True</field>
+        <field name="list_price">500</field>
+        <field name="categ_id" ref="product_category_drinks"/>
+        <field name="pos_categ_ids" eval="[(6, 0, [ref('pos_category_bar')])]"/>
+    </record>
+
+    <record id="product_cafe" model="product.template">
+        <field name="name">Cafe</field>
+        <field name="type">consu</field>
+        <field name="available_in_pos">True</field>
+        <field name="list_price">1000</field>
+        <field name="categ_id" ref="product_category_drinks"/>
+        <field name="pos_categ_ids" eval="[(6, 0, [ref('pos_category_bar')])]"/>
+    </record>
+</odoo>

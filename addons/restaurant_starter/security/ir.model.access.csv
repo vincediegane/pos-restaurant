@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_resto_restaurant_user,resto.restaurant user,model_resto_restaurant,base.group_user,1,1,1,1
