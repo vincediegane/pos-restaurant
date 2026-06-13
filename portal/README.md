@@ -9,7 +9,6 @@ npm install
 python -m pip install -r requirements.txt
 npm run dev
 npm run api
-npm run payments
 ```
 
 Qualite:
@@ -27,17 +26,6 @@ npm run check
 - `src/utils/restaurantTree.test.ts` couvre la logique restaurant parent, succursales et suppression.
 - `tests/e2e/login.spec.ts` verifie que l'ecran de connexion apparait quand aucune session n'est active.
 
-## Paiements
-
-Le service local `server/payments.js` supporte:
-
-- simulation locale Wave/Orange Money sans cles API,
-- confirmation locale si `PAYMENT_ALLOW_DEV_CONFIRM=true`,
-- webhooks,
-- logs JSON par requete,
-- endpoint sante: `http://127.0.0.1:8787/payments/health`,
-- endpoint metriques: `http://127.0.0.1:8787/payments/metrics`.
-
 ## Notes production
 
 Une API backend Flask existe dans `server/api.py`. Elle persiste les donnees dans PostgreSQL, valide la hierarchie parent/succursales et expose:
@@ -48,7 +36,7 @@ Une API backend Flask existe dans `server/api.py`. Elle persiste les donnees dan
 
 Elle persiste maintenant ses donnees dans PostgreSQL via `PORTAL_DATABASE_URL`. Au premier demarrage, si la base est vide, elle migre automatiquement l'ancien `server/portal-store.json` puis travaille en base.
 
-Dependances backend: Flask, Flask-CORS, Psycopg 3, Waitress et python-dotenv. Le serveur de paiements reste en Node.js.
+Dependances backend: Flask, Flask-CORS, Psycopg 3, Waitress et python-dotenv. Les paiements sont geres par le POS natif d'Odoo.
 
 Tables creees:
 

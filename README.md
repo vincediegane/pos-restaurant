@@ -13,7 +13,6 @@ Le portail centralise les restaurants et succursales, les utilisateurs, les role
 - suivi du chiffre d'affaires, des ventes et du stock ;
 - filtres par date et exports Excel/PDF ;
 - gestion des utilisateurs et synchronisation avec les employes Odoo ;
-- paiements Wave et Orange Money simulables en local ;
 - journal d'audit, logs techniques et endpoints de metriques.
 
 ## Architecture
@@ -24,7 +23,6 @@ Le portail centralise les restaurants et succursales, les utilisateurs, les role
 | Base de donnees | PostgreSQL 14 | `5433` |
 | Portail web | React, Vite, TypeScript, Tailwind CSS | `5173` |
 | API du portail | Flask, Waitress, Psycopg 3 | `8788` |
-| Service de paiement local | Node.js, Express | `8787` |
 
 Le module Odoo personnalise se trouve dans `addons/restaurant_starter`. Il ajoute notamment le modele `resto.restaurant` et le champ `restaurant_id` sur les produits, configurations POS, sessions et commandes.
 
@@ -93,7 +91,7 @@ PORTAL_DATABASE_URL=postgres://odoo:odoo@127.0.0.1:5433/postgres
 
 ### 4. Demarrer les services
 
-Ouvrir trois terminaux dans `portal`.
+Ouvrir deux terminaux dans `portal`.
 
 Terminal 1, API Flask :
 
@@ -101,13 +99,7 @@ Terminal 1, API Flask :
 npm run api
 ```
 
-Terminal 2, service de paiement :
-
-```powershell
-npm run payments
-```
-
-Terminal 3, portail React :
+Terminal 2, portail React :
 
 ```powershell
 npm run dev
@@ -121,17 +113,9 @@ La connexion au portail utilise d'abord un compte Odoo valide, puis verifie que 
 
 Lorsqu'un utilisateur est cree depuis le portail, un mot de passe aleatoire non affiche est utilise pour eviter tout identifiant par defaut connu. Un administrateur doit ensuite definir ou reinitialiser son mot de passe dans Odoo avant sa premiere connexion.
 
-Les mots de passe, cles Wave et cles Orange Money doivent rester uniquement dans les fichiers `.env`, qui ne sont pas versionnes. Ne publiez jamais de sauvegarde PostgreSQL ou de filestore Odoo dans le depot.
+Les mots de passe doivent rester uniquement dans les fichiers `.env`, qui ne sont pas versionnes. Ne publiez jamais de sauvegarde PostgreSQL ou de filestore Odoo dans le depot.
 
-## Paiements mobiles
-
-Sans cles fournisseur, les paiements Wave et Orange Money peuvent etre simules localement :
-
-```dotenv
-PAYMENT_ALLOW_DEV_CONFIRM=true
-```
-
-Pour une integration reelle, renseigner les identifiants fournisseur dans `portal/.env` et configurer des URLs publiques pour les callbacks.
+Les paiements sont geres directement par le POS natif et les moyens de paiement configures dans Odoo. Le projet n'embarque plus de serveur de simulation de paiement.
 
 ## Verification
 
@@ -148,7 +132,6 @@ Endpoints utiles :
 
 - API Flask : [http://127.0.0.1:8788/portal-api/health](http://127.0.0.1:8788/portal-api/health)
 - Metriques API : [http://127.0.0.1:8788/portal-api/metrics](http://127.0.0.1:8788/portal-api/metrics)
-- Paiements : [http://127.0.0.1:8787/payments/health](http://127.0.0.1:8787/payments/health)
 
 ## Structure
 
@@ -158,7 +141,6 @@ config/                  configuration Odoo
 imports/                 fichiers d'import produits
 portal/src/              application React
 portal/server/api.py     API Flask du portail
-portal/server/payments.js service de paiement local
 scripts/                 scripts d'import et d'initialisation
 docker-compose.yml       Odoo et PostgreSQL
 ```
@@ -168,6 +150,6 @@ docker-compose.yml       Odoo et PostgreSQL
 - remplacer les mots de passe temporaires par un flux d'invitation/reinitialisation ;
 - utiliser HTTPS et un gestionnaire de secrets ;
 - ajouter des migrations SQL versionnees ;
-- connecter les comptes marchands Wave et Orange Money reels ;
+- connecter les prestataires de paiement reels directement au POS si necessaire ;
 - ajouter sauvegardes automatisees, supervision et alertes ;
 - executer Odoo, Flask et le portail derriere un reverse proxy.

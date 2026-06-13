@@ -7,6 +7,5 @@ filestore/
 sessions/
 __pycache__/
 *.py[cod]
-portal/server/payment-store.json
 portal/server/portal-store.json
 config/odoo.conf

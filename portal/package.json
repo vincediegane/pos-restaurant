@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "vite",
     "api": "python server/api.py",
-    "payments": "node server/payments.js",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test": "vitest run src",
@@ -17,10 +16,7 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
     "exceljs": "^4.4.0",
-    "express": "^5.2.1",
     "jspdf": "^4.2.1",
     "jspdf-autotable": "^5.0.7",
     "lucide-react": "^1.14.0",
