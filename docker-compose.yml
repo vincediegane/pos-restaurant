@@ -1,4 +1,6 @@
-name: pos-restaurant
+# Keep the legacy Compose project name so existing local volumes remain attached
+# after the repository folder was renamed to pos-restaurant.
+name: salut-je-veux-g-rer-mon
 
 services:
   db:
@@ -40,6 +42,4 @@ services:
 
 volumes:
   odoo-db-data-pg14:
-    name: salut-je-veux-g-rer-mon_odoo-db-data-pg14
   odoo-web-data-v17:
-    name: salut-je-veux-g-rer-mon_odoo-web-data-v17
