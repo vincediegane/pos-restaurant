@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_resto_root"
+        name="Restaurant"
+        sequence="10"/>
+
+    <menuitem id="menu_resto_dashboard"
+        name="Tableau de bord"
+        parent="menu_resto_root"
+        sequence="10"
+        action="action_resto_dashboard"/>
+
+    <menuitem id="menu_resto_pos"
+        name="Caisse"
+        parent="menu_resto_root"
+        sequence="20"
+        action="point_of_sale.pos_config_action"/>
+
+    <menuitem id="menu_resto_catalogue"
+        name="Catalogue"
+        parent="menu_resto_root"
+        sequence="30"/>
+
+    <menuitem id="menu_resto_products"
+        name="Produits"
+        parent="menu_resto_catalogue"
+        sequence="10"
+        action="product.product_template_action"/>
+
+    <menuitem id="menu_resto_product_categories"
+        name="Categories produits"
+        parent="menu_resto_catalogue"
+        sequence="20"
+        action="product.product_category_action"/>
+
+    <menuitem id="menu_resto_pos_categories"
+        name="Categories POS"
+        parent="menu_resto_catalogue"
+        sequence="30"
+        action="point_of_sale.action_pos_category"/>
+
+    <menuitem id="menu_resto_stock"
+        name="Stock"
+        parent="menu_resto_root"
+        sequence="40"
+        action="stock.product_stock_tree_view"/>
+
+    <menuitem id="menu_resto_settings"
+        name="Parametres"
+        parent="menu_resto_root"
+        sequence="50"
+        groups="restaurant_starter.group_resto_super_admin"/>
+
+    <menuitem id="menu_resto_restaurants"
+        name="Restaurant"
+        parent="menu_resto_settings"
+        sequence="10"
+        action="action_resto_restaurant"/>
+
+    <menuitem id="menu_resto_users"
+        name="Utilisateurs"
+        parent="menu_resto_settings"
+        sequence="20"
+        action="action_resto_res_users"/>
+
+    <menuitem id="menu_resto_audit"
+        name="Audit"
+        parent="menu_resto_settings"
+        sequence="30"
+        action="action_resto_audit_log"/>
+
+    <menuitem id="menu_resto_payment_methods"
+        name="Moyens de paiement"
+        parent="menu_resto_settings"
+        sequence="40"
+        action="point_of_sale.action_pos_payment_method"/>
+</odoo>

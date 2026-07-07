@@ -1,4 +1,5 @@
-<odoo>
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
     <record id="restaurant_main" model="resto.restaurant">
         <field name="name">Restaurant Principal</field>
         <field name="external_key">main-restaurant</field>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_resto_restaurant_tree" model="ir.ui.view">
+        <field name="name">resto.restaurant.tree</field>
+        <field name="model">resto.restaurant</field>
+        <field name="arch" type="xml">
+            <tree string="Restaurants">
+                <field name="name" string="Nom"/>
+                <field name="external_key" string="Cle externe"/>
+                <field name="city" string="Ville"/>
+                <field name="manager" string="Responsable"/>
+                <field name="phone" string="Telephone"/>
+                <field name="active" string="Actif" widget="boolean_toggle"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_resto_restaurant_form" model="ir.ui.view">
+        <field name="name">resto.restaurant.form</field>
+        <field name="model">resto.restaurant</field>
+        <field name="arch" type="xml">
+            <form string="Restaurant">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_resto_restaurant_sessions)d" type="action"
+                            class="oe_stat_button" icon="fa-desktop">
+                            <div class="o_stat_info">
+                                <field name="session_count" widget="statinfo"/>
+                                <span class="o_stat_text">Sessions</span>
+                            </div>
+                        </button>
+                        <button name="%(action_resto_restaurant_orders)d" type="action"
+                            class="oe_stat_button" icon="fa-shopping-cart">
+                            <div class="o_stat_info">
+                                <field name="order_count" widget="statinfo"/>
+                                <span class="o_stat_text">Commandes</span>
+                            </div>
+                        </button>
+                        <button name="%(action_resto_restaurant_products)d" type="action"
+                            class="oe_stat_button" icon="fa-cube">
+                            <div class="o_stat_info">
+                                <field name="product_count" widget="statinfo"/>
+                                <span class="o_stat_text">Produits</span>
+                            </div>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="external_key" required="1"/>
+                            <field name="legal_name"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                            <field name="manager"/>
+                            <field name="phone"/>
+                            <field name="email"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Adresse">
+                            <group>
+                                <field name="address"/>
+                                <field name="city"/>
+                                <field name="tax_id"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_resto_restaurant" model="ir.actions.act_window">
+        <field name="name">Restaurant</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">resto.restaurant</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p>Gerer la fiche du restaurant.</p>
+        </field>
+    </record>
+
+    <record id="action_resto_restaurant_sessions" model="ir.actions.act_window">
+        <field name="name">Sessions</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pos.session</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_resto_restaurant_orders" model="ir.actions.act_window">
+        <field name="name">Commandes</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pos.order</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_resto_restaurant_products" model="ir.actions.act_window">
+        <field name="name">Produits</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

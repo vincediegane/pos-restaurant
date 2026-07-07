@@ -1,12 +1,11 @@
-from odoo import api, fields, models
+from odoo import fields, models
 from odoo.osv.expression import AND
 
 
 class RestoRestaurant(models.Model):
     _name = "resto.restaurant"
     _description = "Restaurant"
-    _parent_name = "parent_id"
-    _order = "parent_id, name"
+    _order = "name"
 
     name = fields.Char(required=True)
     external_key = fields.Char(required=True, index=True)
@@ -18,24 +17,36 @@ class RestoRestaurant(models.Model):
     tax_id = fields.Char()
     manager = fields.Char()
     active = fields.Boolean(default=True)
-    parent_id = fields.Many2one("resto.restaurant", string="Restaurant parent", index=True, ondelete="restrict")
-    child_ids = fields.One2many("resto.restaurant", "parent_id", string="Succursales")
+
+    session_count = fields.Integer(compute="_compute_counts", string="Sessions")
+    order_count = fields.Integer(compute="_compute_counts", string="Commandes")
+    product_count = fields.Integer(compute="_compute_counts", string="Produits")
 
     _sql_constraints = [
         ("external_key_unique", "unique(external_key)", "La cle externe du restaurant doit etre unique."),
     ]
 
+    def _compute_counts(self):
+        session_count = self.env["pos.session"].search_count([])
+        order_count = self.env["pos.order"].search_count([])
+        product_count = self.env["product.template"].search_count([])
+        for r in self:
+            r.session_count = session_count
+            r.order_count = order_count
+            r.product_count = product_count
 
-class ProductTemplate(models.Model):
-    _inherit = "product.template"
-
-    restaurant_id = fields.Many2one("resto.restaurant", string="Restaurant", index=True, ondelete="set null")
+    def write(self, vals):
+        res = super().write(vals)
+        self.env["resto.audit.log"].log(
+            "restaurant.updated",
+            {"ids": self.ids, "fields": sorted(vals)},
+        )
+        return res
 
 
 class PosConfig(models.Model):
     _inherit = "pos.config"
 
-    restaurant_id = fields.Many2one("resto.restaurant", string="Restaurant", index=True, ondelete="set null")
     resto_lock_cashier_to_user = fields.Boolean(
         string="Verrouiller le caissier connecte",
         default=True,
@@ -53,36 +64,3 @@ class PosConfig(models.Model):
             self._check_company_domain(self.company_id),
             [("user_id", "=", user_id)],
         ])
-
-
-class PosSession(models.Model):
-    _inherit = "pos.session"
-
-    restaurant_id = fields.Many2one("resto.restaurant", string="Restaurant", index=True, ondelete="set null")
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            if not vals.get("restaurant_id") and vals.get("config_id"):
-                config = self.env["pos.config"].browse(vals["config_id"])
-                vals["restaurant_id"] = config.restaurant_id.id
-        return super().create(vals_list)
-
-
-class PosOrder(models.Model):
-    _inherit = "pos.order"
-
-    restaurant_id = fields.Many2one("resto.restaurant", string="Restaurant", index=True, ondelete="set null")
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            if vals.get("restaurant_id"):
-                continue
-            if vals.get("session_id"):
-                session = self.env["pos.session"].browse(vals["session_id"])
-                vals["restaurant_id"] = session.restaurant_id.id
-            if not vals.get("restaurant_id") and vals.get("config_id"):
-                config = self.env["pos.config"].browse(vals["config_id"])
-                vals["restaurant_id"] = config.restaurant_id.id
-        return super().create(vals_list)

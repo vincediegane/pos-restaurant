@@ -16,17 +16,6 @@ def get_or_create(model_name, domain, values):
 
 
 products = json.loads(PRODUCTS_PATH.read_text(encoding="utf-8"))
-main_restaurant = get_or_create(
-    "resto.restaurant",
-    [("external_key", "=", "main-restaurant")],
-    {
-        "name": "Restaurant Principal",
-        "external_key": "main-restaurant",
-        "legal_name": "Restaurant Principal SARL",
-        "city": "Dakar",
-        "manager": "Super admin",
-    },
-)
 
 created = 0
 updated = 0
@@ -60,7 +49,6 @@ for item in products:
         "sale_ok": item["can_be_sold"],
         "purchase_ok": item["can_be_purchased"],
         "image_1920": base64.b64encode(image_bytes),
-        "restaurant_id": main_restaurant.id,
     }
     if pos_category_ids:
         values["pos_categ_ids"] = pos_category_ids

@@ -1,2 +1,2 @@
-# Starter module for restaurant deployments.
 from . import models
+from . import controllers

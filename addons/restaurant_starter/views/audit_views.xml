@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_resto_audit_log_tree" model="ir.ui.view">
+        <field name="name">resto.audit.log.tree</field>
+        <field name="model">resto.audit.log</field>
+        <field name="arch" type="xml">
+            <tree string="Audit" default_order="id desc">
+                <field name="created_at" string="Date"/>
+                <field name="event" string="Evenement"/>
+                <field name="actor_name" string="Acteur"/>
+                <field name="actor_role" string="Role"/>
+                <field name="payload" string="Donnees"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_resto_audit_log_form" model="ir.ui.view">
+        <field name="name">resto.audit.log.form</field>
+        <field name="model">resto.audit.log</field>
+        <field name="arch" type="xml">
+            <form string="Audit">
+                <sheet>
+                    <group>
+                        <field name="created_at"/>
+                        <field name="event"/>
+                        <field name="actor_id"/>
+                        <field name="actor_name"/>
+                        <field name="actor_login"/>
+                        <field name="actor_role"/>
+                    </group>
+                    <group string="Donnees">
+                        <field name="payload" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_resto_audit_log" model="ir.actions.act_window">
+        <field name="name">Audit</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">resto.audit.log</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p>Consulter le journal d audit des actions dans le module restaurant.</p>
+        </field>
+    </record>
+</odoo>

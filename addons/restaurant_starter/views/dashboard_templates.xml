@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_resto_dashboard" model="ir.actions.act_url">
+        <field name="name">Tableau de bord</field>
+        <field name="url">/resto/dashboard</field>
+        <field name="target">self</field>
+    </record>
+
+    <template id="resto_dashboard_page" name="Restaurant Dashboard">
+        <t t-call="web.html_container">
+            <t t-foreach="[True]" t-as="dummy">
+                <t t-call="web.external_layout">
+                    <t t-set="additional_title">Tableau de bord Restaurant</t>
+
+                    <div id="resto-dashboard" class="container-fluid py-3">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h2 class="mb-0">Tableau de bord</h2>
+                                    <div class="d-flex gap-2">
+                                        <input type="date" id="filter-date-from" class="form-control form-control-sm" style="width:160px"/>
+                                        <input type="date" id="filter-date-to" class="form-control form-control-sm" style="width:160px"/>
+                                        <button id="btn-filter-today" class="btn btn-sm btn-outline-secondary">Aujourd'hui</button>
+                                        <button id="btn-filter-all" class="btn btn-sm btn-outline-secondary">Tout</button>
+                                        <button id="btn-refresh" class="btn btn-sm btn-primary">
+                                            <i class="fa fa-refresh me-1"/>Actualiser
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="resto-kpi-row" class="row mb-4">
+                            <div class="col-md-3 mb-2">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <i class="fa fa-money text-success fa-2x mb-2"></i>
+                                        <h6 class="text-muted text-uppercase small">Chiffre d'affaires</h6>
+                                        <h3 class="mb-0" id="kpi-revenue">--</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <i class="fa fa-ticket text-info fa-2x mb-2"></i>
+                                        <h6 class="text-muted text-uppercase small">Ticket moyen</h6>
+                                        <h3 class="mb-0" id="kpi-avg-ticket">--</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <i class="fa fa-cubes text-warning fa-2x mb-2"></i>
+                                        <h6 class="text-muted text-uppercase small">Produits POS</h6>
+                                        <h3 class="mb-0" id="kpi-pos-products">--</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <i class="fa fa-exclamation-triangle text-danger fa-2x mb-2"></i>
+                                        <h6 class="text-muted text-uppercase small">Alertes stock</h6>
+                                        <h3 class="mb-0" id="kpi-low-stock">--</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-8 mb-3">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-header bg-white py-3 d-flex justify-content-between">
+                                        <h5 class="mb-0">Ventes recentes</h5>
+                                        <span class="text-muted small">CA et volume</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="chart-revenue" height="250"></canvas>
+                                        <p class="text-muted text-center mt-2 d-none" id="no-sales-msg">Aucune vente sur cette periode.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-header bg-white py-3">
+                                        <h5 class="mb-0">Catalogue</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="chart-categories" height="220"></canvas>
+                                        <div id="category-legend" class="mt-2 small"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-12 mb-3">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-white py-3 d-flex justify-content-between">
+                                        <h5 class="mb-0">Meilleures marges</h5>
+                                        <span class="text-muted small">Top produits</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <canvas id="chart-margins" height="200"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-white py-3 d-flex justify-content-between">
+                                        <h5 class="mb-0">Aujourd'hui</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row text-center">
+                                            <div class="col-6">
+                                                <h4 id="today-orders">0</h4>
+                                                <p class="text-muted small mb-0">Commandes</p>
+                                            </div>
+                                            <div class="col-6">
+                                                <h4 id="today-revenue">0 CFA</h4>
+                                                <p class="text-muted small mb-0">Revenu</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-header bg-white py-3 d-flex justify-content-between">
+                                        <h5 class="mb-0">Sessions ouvertes</h5>
+                                        <span class="text-muted small" id="open-sessions-count">0</span>
+                                    </div>
+                                    <div class="card-body py-2" id="open-sessions-list">
+                                        <p class="text-muted small mb-0">Aucune session ouverte.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script type="text/javascript">
+                        function formatCFA(value) {
+                            return new Intl.NumberFormat('fr-FR', {
+                                style: 'currency',
+                                currency: 'XOF',
+                                maximumFractionDigits: 0,
+                            }).format(value);
+                        }
+
+                        function loadDashboard(dateFrom, dateTo) {
+                            var data = {
+                                params: {
+                                    date_from: dateFrom || '',
+                                    date_to: dateTo || '',
+                                },
+                            };
+                            $.ajax({
+                                url: '/resto/dashboard/data',
+                                type: 'POST',
+                                contentType: 'application/json',
+                                data: JSON.stringify(data),
+                                success: function (result) {
+                                    renderDashboard(result);
+                                },
+                                error: function () {
+                                    $('#resto-dashboard').prepend(
+                                        '<div class="alert alert-danger">Erreur de chargement du tableau de bord.</div>'
+                                    );
+                                },
+                            });
+                        }
+
+                        var revenueChart = null;
+                        var categoriesChart = null;
+                        var marginsChart = null;
+
+                        function renderDashboard(data) {
+                            $('#kpi-revenue').text(formatCFA(data.total_revenue));
+                            $('#kpi-avg-ticket').text(formatCFA(data.avg_ticket));
+                            $('#kpi-pos-products').text(data.pos_products_count);
+                            $('#kpi-low-stock').text(data.tracked_low_stock);
+
+                            $('#today-orders').text(data.today_orders_count);
+                            $('#today-revenue').text(formatCFA(data.today_revenue));
+
+                            var sessions = data.open_sessions || [];
+                            $('#open-sessions-count').text(sessions.length);
+                            if (sessions.length) {
+                                var html = '';
+                                sessions.forEach(function (s) {
+                                    html += '<div class="d-flex justify-content-between py-1 border-bottom small">';
+                                    html += '<span><i class="fa fa-circle text-success me-1"></i>' + s.name + '</span>';
+                                    html += '<span class="text-muted">' + s.config + '</span>';
+                                    html += '</div>';
+                                });
+                                $('#open-sessions-list').html(html);
+                            } else {
+                                $('#open-sessions-list').html('<p class="text-muted small mb-0">Aucune session ouverte.</p>');
+                            }
+
+                            // Revenue chart
+                            var sales = data.sales_by_day || [];
+                            var revCtx = document.getElementById('chart-revenue').getContext('2d');
+                            if (revenueChart) revenueChart.destroy();
+                            if (sales.length) {
+                                $('#no-sales-msg').addClass('d-none');
+                                revenueChart = new Chart(revCtx, {
+                                    type: 'line',
+                                    data: {
+                                        labels: sales.map(function (s) { return s.label; }),
+                                        datasets: [{
+                                            label: 'CA',
+                                            data: sales.map(function (s) { return s.revenue; }),
+                                            borderColor: '#4f7c6a',
+                                            backgroundColor: 'rgba(79,124,106,0.1)',
+                                            fill: true,
+                                            tension: 0.3,
+                                        }],
+                                    },
+                                    options: {
+                                        responsive: true,
+                                        maintainAspectRatio: false,
+                                        plugins: { legend: { display: false } },
+                                        scales: {
+                                            y: { beginAtZero: true, ticks: { callback: function (v) { return formatCFA(v); } } },
+                                        },
+                                    },
+                                });
+                            } else {
+                                $('#no-sales-msg').removeClass('d-none');
+                                revenueChart = new Chart(revCtx, { type: 'line', data: { labels: [], datasets: [] } });
+                            }
+
+                            // Categories chart
+                            var cats = data.category_distribution || [];
+                            var catCtx = document.getElementById('chart-categories').getContext('2d');
+                            if (categoriesChart) categoriesChart.destroy();
+                            var catColors = ['#4f7c6a', '#d79b2b', '#c95d4f', '#3d6272', '#7c6f64'];
+                            categoriesChart = new Chart(catCtx, {
+                                type: 'doughnut',
+                                data: {
+                                    labels: cats.map(function (c) { return c.name; }),
+                                    datasets: [{
+                                        data: cats.map(function (c) { return c.value; }),
+                                        backgroundColor: catColors,
+                                    }],
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: { legend: { display: false } },
+                                },
+                            });
+                            var legendHtml = '';
+                            cats.forEach(function (c, i) {
+                                legendHtml += '<div class="d-flex justify-content-between align-items-center py-1">';
+                                legendHtml += '<span><span class="d-inline-block rounded-circle me-1" style="width:10px;height:10px;background:' + catColors[i % catColors.length] + '"></span>' + c.name + '</span>';
+                                legendHtml += '<span class="fw-bold">' + c.value + '</span>';
+                                legendHtml += '</div>';
+                            });
+                            $('#category-legend').html(legendHtml);
+
+                            // Margins chart
+                            var margins = data.top_margins || [];
+                            var margCtx = document.getElementById('chart-margins').getContext('2d');
+                            if (marginsChart) marginsChart.destroy();
+                            marginsChart = new Chart(margCtx, {
+                                type: 'bar',
+                                data: {
+                                    labels: margins.map(function (m) { return m.code; }),
+                                    datasets: [{
+                                        label: 'Marge %',
+                                        data: margins.map(function (m) { return m.margin; }),
+                                        backgroundColor: '#d79b2b',
+                                    }],
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: { legend: { display: false } },
+                                    scales: {
+                                        y: { beginAtZero: true, ticks: { callback: function (v) { return v + '%'; } } },
+                                    },
+                                },
+                            });
+                        }
+
+                        $(document).ready(function () {
+                            var today = new Date().toISOString().slice(0, 10);
+                            $('#filter-date-from').val(today);
+                            $('#filter-date-to').val(today);
+
+                            loadDashboard(today, today);
+
+                            $('#btn-refresh').click(function () {
+                                loadDashboard($('#filter-date-from').val(), $('#filter-date-to').val());
+                            });
+                            $('#btn-filter-today').click(function () {
+                                var t = new Date().toISOString().slice(0, 10);
+                                $('#filter-date-from').val(t);
+                                $('#filter-date-to').val(t);
+                                loadDashboard(t, t);
+                            });
+                            $('#btn-filter-all').click(function () {
+                                $('#filter-date-from').val('');
+                                $('#filter-date-to').val('');
+                                loadDashboard('', '');
+                            });
+                        });
+                    </script>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

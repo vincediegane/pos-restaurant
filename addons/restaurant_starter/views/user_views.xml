@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_resto_users_form" model="ir.ui.view">
+        <field name="name">res.users.resto.form</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='groups_id']/.." position="before">
+                <separator string="Acces Restaurant"/>
+                <group>
+                    <field name="resto_role" required="1"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_resto_users_tree" model="ir.ui.view">
+        <field name="name">res.users.resto.tree</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_tree"/>
+        <field name="arch" type="xml">
+            <field name="login" position="after">
+                <field name="resto_role"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="action_resto_res_users" model="ir.actions.act_window">
+        <field name="name">Utilisateurs</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.users</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[("resto_role", "!=", False)]</field>
+        <field name="context">{"default_resto_role": "cashier"}</field>
+        <field name="help" type="html">
+            <p>Gerer les utilisateurs du restaurant et leurs roles.</p>
+        </field>
+    </record>
+</odoo>
