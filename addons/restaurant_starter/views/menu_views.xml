@@ -14,7 +14,7 @@
         name="Caisse"
         parent="menu_resto_root"
         sequence="20"
-        action="point_of_sale.pos_config_action"/>
+        action="point_of_sale.action_pos_config_kanban"/>
 
     <menuitem id="menu_resto_catalogue"
         name="Catalogue"
@@ -31,19 +31,19 @@
         name="Categories produits"
         parent="menu_resto_catalogue"
         sequence="20"
-        action="product.product_category_action"/>
+        action="point_of_sale.product_category_action"/>
 
     <menuitem id="menu_resto_pos_categories"
         name="Categories POS"
         parent="menu_resto_catalogue"
         sequence="30"
-        action="point_of_sale.action_pos_category"/>
+        action="point_of_sale.product_pos_category_action"/>
 
     <menuitem id="menu_resto_stock"
         name="Stock"
         parent="menu_resto_root"
         sequence="40"
-        action="stock.product_stock_tree_view"/>
+        action="stock.product_template_action_product"/>
 
     <menuitem id="menu_resto_settings"
         name="Parametres"
@@ -73,5 +73,5 @@
         name="Moyens de paiement"
         parent="menu_resto_settings"
         sequence="40"
-        action="point_of_sale.action_pos_payment_method"/>
+        action="point_of_sale.action_pos_payment_method_form"/>
 </odoo>

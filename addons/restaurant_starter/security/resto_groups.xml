@@ -11,6 +11,12 @@
         <field name="users" eval="[(4, ref('base.user_admin'))]"/>
     </record>
 
+    <data noupdate="1">
+        <record id="base.user_admin" model="res.users">
+            <field name="resto_role">super_admin</field>
+        </record>
+    </data>
+
     <record id="group_resto_manager" model="res.groups">
         <field name="name">Manager restaurant</field>
         <field name="category_id" ref="base.module_category_point_of_sale"/>
