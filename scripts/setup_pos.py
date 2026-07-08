@@ -25,6 +25,30 @@ if company.currency_id != xof:
 configs = env["pos.config"].search([])
 print("Configs POS:", configs.mapped("name"))
 
+# 1bis. Comptes de vente/achat par defaut sur les categories de produits
+# (sans compte de revenu, la cloture de session POS echoue).
+income = env["account.account"].search(
+    [("account_type", "=", "income"), ("code", "=like", "701%"), ("company_id", "=", company.id)],
+    limit=1,
+) or env["account.account"].search(
+    [("account_type", "=", "income"), ("company_id", "=", company.id)], limit=1
+)
+expense = env["account.account"].search(
+    [("account_type", "=", "expense"), ("code", "=like", "601%"), ("company_id", "=", company.id)],
+    limit=1,
+) or env["account.account"].search(
+    [("account_type", "=", "expense"), ("company_id", "=", company.id)], limit=1
+)
+if income and expense:
+    categories = env["product.category"].search([])
+    categories.write(
+        {
+            "property_account_income_categ_id": income.id,
+            "property_account_expense_categ_id": expense.id,
+        }
+    )
+    print(f"Comptes {income.code}/{expense.code} appliques a {len(categories)} categories")
+
 
 def get_or_create_bank_journal(name, code):
     journal = env["account.journal"].search(
