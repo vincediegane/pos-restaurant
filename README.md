@@ -68,6 +68,17 @@ docker compose restart odoo
 
 Une fois redemarre, le menu **Restaurant** apparait dans Odoo avec les sous-menus : Tableau de bord, Caisse, Catalogue, Stock, Parametres.
 
+### 4. Initialiser la comptabilite et la caisse
+
+Obligatoire avant la premiere session POS (plan comptable SYSCOHADA Senegal, devise XOF, journaux, moyens de paiement Especes/Wave/Orange Money) :
+
+```powershell
+docker compose exec -T odoo odoo shell -d ecole-db --no-http < scripts/setup_pos.py
+docker compose restart odoo
+```
+
+Le script est idempotent : il peut etre relance sans dupliquer les donnees.
+
 ## Comptes et securite
 
 - Compte admin par defaut : `admin` (mot de passe defini lors de la creation de la base).

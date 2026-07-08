@@ -22,7 +22,6 @@
         "security/ir.model.access.csv",
         "data/restaurants.xml",
         "data/product_categories.xml",
-        "data/payment_methods.xml",
         "data/products.xml",
         "views/restaurant_views.xml",
         "views/user_views.xml",
