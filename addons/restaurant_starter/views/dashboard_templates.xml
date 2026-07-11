@@ -10,6 +10,63 @@
         <field name="tag">resto_dashboard_client_action</field>
     </record>
 
+    <!-- Rapport imprimable (PDF) : donnees identiques a la page live, mais
+         rendu en tables HTML statiques, car wkhtmltopdf n'execute pas de
+         maniere fiable le fetch + Chart.js de la page live. -->
+    <template id="resto_dashboard_report" name="Rapport Tableau de bord Restaurant">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Tableau de bord Restaurant</h2>
+                    <p class="text-muted" t-esc="period_label"/>
+
+                    <table class="table table-sm" style="width:60%">
+                        <tr><td>Chiffre d'affaires</td><td class="text-end"><span t-esc="total_revenue"/> F CFA</td></tr>
+                        <tr><td>Nombre de commandes</td><td class="text-end"><span t-esc="num_orders"/></td></tr>
+                        <tr><td>Ticket moyen</td><td class="text-end"><span t-esc="avg_ticket"/> F CFA</td></tr>
+                        <tr><td>Produits actifs en caisse</td><td class="text-end"><span t-esc="pos_products_count"/></td></tr>
+                        <tr><td>Alertes stock bas</td><td class="text-end"><span t-esc="tracked_low_stock"/></td></tr>
+                    </table>
+
+                    <h4 class="mt-4">Ventes par jour</h4>
+                    <table class="table table-sm table-bordered">
+                        <thead><tr><th>Date</th><th>CA</th><th>Commandes</th></tr></thead>
+                        <tbody>
+                            <tr t-foreach="sales_by_day" t-as="day">
+                                <td t-esc="day['label']"/>
+                                <td t-esc="day['revenue']"/>
+                                <td t-esc="day['orders']"/>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 class="mt-4">Meilleures marges</h4>
+                    <table class="table table-sm table-bordered">
+                        <thead><tr><th>Code</th><th>Produit</th><th>Marge %</th></tr></thead>
+                        <tbody>
+                            <tr t-foreach="top_margins" t-as="margin">
+                                <td t-esc="margin['code']"/>
+                                <td t-esc="margin['name']"/>
+                                <td t-esc="margin['margin']"/>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 class="mt-4">Repartition du catalogue</h4>
+                    <table class="table table-sm table-bordered">
+                        <thead><tr><th>Categorie</th><th>Produits</th></tr></thead>
+                        <tbody>
+                            <tr t-foreach="category_distribution" t-as="cat">
+                                <td t-esc="cat['name']"/>
+                                <td t-esc="cat['value']"/>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
     <template id="resto_dashboard_page" name="Restaurant Dashboard">
         <t t-call="web.html_container">
             <t t-foreach="[True]" t-as="dummy">
@@ -28,6 +85,12 @@
                                         <button id="btn-filter-all" class="btn btn-sm btn-outline-secondary">Tout</button>
                                         <button id="btn-refresh" class="btn btn-sm btn-primary">
                                             <i class="fa fa-refresh me-1"/>Actualiser
+                                        </button>
+                                        <button id="btn-export-xlsx" class="btn btn-sm btn-outline-success">
+                                            <i class="fa fa-file-excel-o me-1"/>Excel
+                                        </button>
+                                        <button id="btn-export-pdf" class="btn btn-sm btn-outline-danger">
+                                            <i class="fa fa-file-pdf-o me-1"/>PDF
                                         </button>
                                     </div>
                                 </div>
@@ -296,6 +359,14 @@
                             });
                         }
 
+                        function exportUrl(kind) {
+                            var params = new URLSearchParams({
+                                date_from: $('#filter-date-from').val() || '',
+                                date_to: $('#filter-date-to').val() || '',
+                            });
+                            return '/resto/dashboard/export.' + kind + '?' + params.toString();
+                        }
+
                         $(document).ready(function () {
                             var today = new Date().toISOString().slice(0, 10);
                             $('#filter-date-from').val(today);
@@ -305,6 +376,12 @@
 
                             $('#btn-refresh').click(function () {
                                 loadDashboard($('#filter-date-from').val(), $('#filter-date-to').val());
+                            });
+                            $('#btn-export-xlsx').click(function () {
+                                window.open(exportUrl('xlsx'), '_blank');
+                            });
+                            $('#btn-export-pdf').click(function () {
+                                window.open(exportUrl('pdf'), '_blank');
                             });
                             $('#btn-filter-today').click(function () {
                                 var t = new Date().toISOString().slice(0, 10);
