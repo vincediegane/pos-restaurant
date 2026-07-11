@@ -33,6 +33,9 @@
         "web.assets_backend": [
             "restaurant_starter/static/src/js/dashboard_action.js",
         ],
+        "point_of_sale._assets_pos": [
+            "restaurant_starter/static/src/pos/**/*",
+        ],
     },
     "installable": True,
     "application": True,

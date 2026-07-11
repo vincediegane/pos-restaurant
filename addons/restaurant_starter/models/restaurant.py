@@ -18,6 +18,27 @@ class RestoRestaurant(models.Model):
     manager = fields.Char()
     active = fields.Boolean(default=True)
 
+    # Miroir de res.company.logo : c'est le seul logo reellement utilise
+    # (tickets de caisse, rapports PDF, en-tete des exports). Ce champ
+    # n'existait auparavant nulle part dans l'app Restaurant : la seule
+    # facon de le modifier etait de passer par Reglages > Societes, un
+    # ecran technique qu'un manager ne pense pas a aller chercher.
+    logo = fields.Binary(
+        string="Logo",
+        compute="_compute_logo",
+        inverse="_inverse_logo",
+        help="Logo affiche sur les tickets de caisse et les rapports (identique au logo de la societe).",
+    )
+
+    def _compute_logo(self):
+        logo = self.env.company.logo
+        for record in self:
+            record.logo = logo
+
+    def _inverse_logo(self):
+        for record in self:
+            self.env.company.write({"logo": record.logo})
+
     session_count = fields.Integer(compute="_compute_counts", string="Sessions")
     order_count = fields.Integer(compute="_compute_counts", string="Commandes")
     product_count = fields.Integer(compute="_compute_counts", string="Produits")

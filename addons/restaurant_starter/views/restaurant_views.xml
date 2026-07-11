@@ -65,6 +65,7 @@
                             </div>
                         </button>
                     </div>
+                    <field name="logo" widget="image" class="oe_avatar" options="{'preview_image': 'logo'}"/>
                     <group>
                         <group>
                             <field name="name" required="1"/>
