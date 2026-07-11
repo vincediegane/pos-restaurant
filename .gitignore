@@ -9,3 +9,4 @@ __pycache__/
 *.py[cod]
 portal/server/portal-store.json
 config/odoo.conf
+presentations/
