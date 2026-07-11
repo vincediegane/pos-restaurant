@@ -36,4 +36,21 @@
             <p>Gerer les utilisateurs du restaurant et leurs roles.</p>
         </field>
     </record>
+
+    <!-- Sans ceci, Odoo choisit la vue formulaire "simplifiee" (base.view_users_simple_form,
+         priority=1, invitation d'un nouvel utilisateur) plutot que notre formulaire complet
+         herite de base.view_users_form : les roles restaurant restent invisibles pour tout
+         utilisateur sans le groupe base.group_system (donc pour tous nos roles restaurant). -->
+    <record id="action_resto_res_users_view_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="10"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_resto_users_tree"/>
+        <field name="act_window_id" ref="action_resto_res_users"/>
+    </record>
+    <record id="action_resto_res_users_view_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="20"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_resto_users_form"/>
+        <field name="act_window_id" ref="action_resto_res_users"/>
+    </record>
 </odoo>

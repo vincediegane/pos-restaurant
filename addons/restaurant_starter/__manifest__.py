@@ -29,6 +29,11 @@
         "views/dashboard_templates.xml",
         "views/menu_views.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "restaurant_starter/static/src/js/dashboard_action.js",
+        ],
+    },
     "installable": True,
     "application": True,
 }

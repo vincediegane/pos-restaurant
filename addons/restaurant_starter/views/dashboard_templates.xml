@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="action_resto_dashboard" model="ir.actions.act_url">
+    <!-- Nouvel id (et non action_resto_dashboard) : Odoo refuse de changer le
+         modele d'un enregistrement existant pour un meme external id lors
+         d'une mise a jour de module. L'ancien enregistrement ir.actions.act_url
+         est nettoye automatiquement en fin de mise a jour puisqu'il n'apparait
+         plus dans les donnees du module. -->
+    <record id="action_resto_dashboard_client" model="ir.actions.client">
         <field name="name">Tableau de bord</field>
-        <field name="url">/resto/dashboard</field>
-        <field name="target">self</field>
+        <field name="tag">resto_dashboard_client_action</field>
     </record>
 
     <template id="resto_dashboard_page" name="Restaurant Dashboard">
@@ -167,7 +171,7 @@
                                 contentType: 'application/json',
                                 data: JSON.stringify(data),
                                 success: function (result) {
-                                    renderDashboard(result);
+                                    renderDashboard(result.result);
                                 },
                                 error: function () {
                                     $('#resto-dashboard').prepend(

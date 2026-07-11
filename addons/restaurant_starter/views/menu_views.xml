@@ -4,74 +4,90 @@
         name="Restaurant"
         sequence="10"/>
 
+    <!-- Chaque sous-menu declare son propre attribut groups : Odoo ne fait
+         pas heriter les enfants des groupes du parent (voir CLAUDE.md,
+         section gotchas). Le decoupage suit les groupes deja implique par
+         chaque role dans security/resto_groups.xml plutot que d'inventer de
+         nouvelles regles d'acces. -->
     <menuitem id="menu_resto_dashboard"
         name="Tableau de bord"
         parent="menu_resto_root"
         sequence="10"
-        action="action_resto_dashboard"/>
+        action="action_resto_dashboard_client"
+        groups="restaurant_starter.group_resto_manager,restaurant_starter.group_resto_super_admin"/>
 
     <menuitem id="menu_resto_pos"
         name="Caisse"
         parent="menu_resto_root"
         sequence="20"
-        action="point_of_sale.action_pos_config_kanban"/>
+        action="point_of_sale.action_pos_config_kanban"
+        groups="restaurant_starter.group_resto_cashier,restaurant_starter.group_resto_manager,restaurant_starter.group_resto_super_admin"/>
 
     <menuitem id="menu_resto_catalogue"
         name="Catalogue"
         parent="menu_resto_root"
-        sequence="30"/>
+        sequence="30"
+        groups="restaurant_starter.group_resto_manager,restaurant_starter.group_resto_stock_manager,restaurant_starter.group_resto_super_admin"/>
 
     <menuitem id="menu_resto_products"
         name="Produits"
         parent="menu_resto_catalogue"
         sequence="10"
-        action="product.product_template_action"/>
+        action="product.product_template_action"
+        groups="restaurant_starter.group_resto_manager,restaurant_starter.group_resto_stock_manager,restaurant_starter.group_resto_super_admin"/>
 
     <menuitem id="menu_resto_product_categories"
         name="Categories produits"
         parent="menu_resto_catalogue"
         sequence="20"
-        action="point_of_sale.product_category_action"/>
+        action="point_of_sale.product_category_action"
+        groups="restaurant_starter.group_resto_manager,restaurant_starter.group_resto_stock_manager,restaurant_starter.group_resto_super_admin"/>
 
     <menuitem id="menu_resto_pos_categories"
         name="Categories POS"
         parent="menu_resto_catalogue"
         sequence="30"
-        action="point_of_sale.product_pos_category_action"/>
+        action="point_of_sale.product_pos_category_action"
+        groups="restaurant_starter.group_resto_manager,restaurant_starter.group_resto_stock_manager,restaurant_starter.group_resto_super_admin"/>
 
     <menuitem id="menu_resto_stock"
         name="Stock"
         parent="menu_resto_root"
         sequence="40"
-        action="stock.product_template_action_product"/>
+        action="stock.product_template_action_product"
+        groups="restaurant_starter.group_resto_manager,restaurant_starter.group_resto_stock_manager,restaurant_starter.group_resto_super_admin"/>
 
     <menuitem id="menu_resto_settings"
         name="Parametres"
         parent="menu_resto_root"
         sequence="50"
-        groups="restaurant_starter.group_resto_super_admin"/>
+        groups="restaurant_starter.group_resto_manager,restaurant_starter.group_resto_super_admin"/>
 
     <menuitem id="menu_resto_restaurants"
         name="Restaurant"
         parent="menu_resto_settings"
         sequence="10"
-        action="action_resto_restaurant"/>
+        action="action_resto_restaurant"
+        groups="restaurant_starter.group_resto_manager,restaurant_starter.group_resto_super_admin"/>
 
     <menuitem id="menu_resto_users"
         name="Utilisateurs"
         parent="menu_resto_settings"
         sequence="20"
-        action="action_resto_res_users"/>
+        action="action_resto_res_users"
+        groups="restaurant_starter.group_resto_super_admin"/>
 
     <menuitem id="menu_resto_audit"
         name="Audit"
         parent="menu_resto_settings"
         sequence="30"
-        action="action_resto_audit_log"/>
+        action="action_resto_audit_log"
+        groups="restaurant_starter.group_resto_super_admin"/>
 
     <menuitem id="menu_resto_payment_methods"
         name="Moyens de paiement"
         parent="menu_resto_settings"
         sequence="40"
-        action="point_of_sale.action_pos_payment_method_form"/>
+        action="point_of_sale.action_pos_payment_method_form"
+        groups="restaurant_starter.group_resto_manager,restaurant_starter.group_resto_super_admin"/>
 </odoo>

@@ -102,9 +102,9 @@ docker-compose.yml       Odoo et PostgreSQL
 
 ## Limites avant production
 
-- remplacer les mots de passe temporaires par un flux d'invitation/reinitialisation ;
+- remplacer les mots de passe temporaires par un flux d'invitation/reinitialisation (Odoo envoie deja un e-mail de reinitialisation a la creation d'un utilisateur via `auth_signup` : il manque surtout un serveur SMTP sortant reel en prod, pas de nouveau code) ;
 - utiliser HTTPS et un gestionnaire de secrets ;
 - passer `list_db = False` dans `config/odoo.conf` (le gestionnaire de bases ne doit pas etre expose) ;
 - connecter les prestataires de paiement reels directement au POS si necessaire ;
 - ajouter sauvegardes automatisees, supervision et alertes ;
-- ajouter des tests automatises (tests Odoo du module).
+- des tests automatises existent maintenant (`addons/restaurant_starter/tests/`, roles/groupes, visibilite des menus par role, restaurant, verrouillage caissier) mais la couverture reste partielle : rien ne teste `controllers/dashboard.py` ni le JS du tableau de bord.
